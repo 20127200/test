@@ -3,11 +3,12 @@ pipeline {
 
     environment {
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Jenkins credentials ID
-        BACKEND_IMAGE = '20127200/backend-image'                   // Docker Hub backend image name
-        FRONTEND_IMAGE = '20127200/frontend-image'                 // Docker Hub frontend image name
+        BACKEND_IMAGE = '20127200/backend-image'                   // Backend Docker Hub image
+        FRONTEND_IMAGE = '20127200/frontend-image'                 // Frontend Docker Hub image
     }
 
     stages {
+        // Clone Code
         stage('Clone Code') {
             steps {
                 echo 'Cloning source code from GitHub...'
@@ -15,6 +16,7 @@ pipeline {
             }
         }
 
+        // Build Backend Image
         stage('Build Backend Image') {
             steps {
                 script {
@@ -24,6 +26,7 @@ pipeline {
             }
         }
 
+        // Build Frontend Image
         stage('Build Frontend Image') {
             steps {
                 script {
@@ -33,6 +36,7 @@ pipeline {
             }
         }
 
+        // Login to Docker Hub
         stage('Login to Docker Hub') {
             steps {
                 script {
@@ -42,6 +46,7 @@ pipeline {
             }
         }
 
+        // Push Backend Image
         stage('Push Backend Image') {
             steps {
                 script {
@@ -51,6 +56,7 @@ pipeline {
             }
         }
 
+        // Push Frontend Image
         stage('Push Frontend Image') {
             steps {
                 script {
@@ -60,7 +66,8 @@ pipeline {
             }
         }
 
-        stage('Remove Existing Backend Container') {
+        // Remove Existing Backend Container
+        stage('Remove Backend Container') {
             steps {
                 script {
                     echo 'Removing existing Backend container (if exists)...'
@@ -69,7 +76,8 @@ pipeline {
             }
         }
 
-        stage('Remove Existing Frontend Container') {
+        // Remove Existing Frontend Container
+        stage('Remove Frontend Container') {
             steps {
                 script {
                     echo 'Removing existing Frontend container (if exists)...'
@@ -78,6 +86,7 @@ pipeline {
             }
         }
 
+        // Run Backend Container
         stage('Run Backend Container') {
             steps {
                 script {
@@ -87,6 +96,7 @@ pipeline {
             }
         }
 
+        // Run Frontend Container
         stage('Run Frontend Container') {
             steps {
                 script {
