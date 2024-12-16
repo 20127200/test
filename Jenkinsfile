@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_IMAGE = '20127200/backend-image:latest'
-        FRONTEND_IMAGE = '20127200/frontend-image:latest'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Đã cấu hình trước trong Jenkins
      
     }
@@ -24,7 +22,7 @@ pipeline {
             steps {
                 echo 'Building Backend Docker Image...'
                     dir('./Back end') {
-                        bat 'docker build -t ${BACKEND_IMAGE} .'
+                        bat 'docker build -t 20127200/backend-image:latest .'
                     }
                 }
         }
@@ -32,7 +30,7 @@ pipeline {
         stage('Build Frontend Image') {
             steps {
                 echo 'Building Frontend Docker Image...'
-                bat 'docker build -t ${FRONTEND_IMAGE} "./Front end"'
+                bat 'docker build -t 20127200/frontend-image:latest "./Front end"'
             }
         }
 
