@@ -1,12 +1,12 @@
 pipeline {
     agent any
+
     stages {
-        stage('Pull Code') {
+        stage ('Pull GitHub repository') {
             steps {
-                echo "Pulling code from GitHub..."
-                git branch: 'main', url: 'https://github.com/NamKhagg/test.git'
-                echo "Code pulled successfully!"
+                git 'https://github.com/NamKhagg/test.git'
             }
         }
+
     }
 }
