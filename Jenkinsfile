@@ -14,7 +14,11 @@ pipeline {
                 git 'https://github.com/NamKhagg/test.git'
             }
         }
-
+        stage('Check Docker') {
+            steps {
+                sh 'docker --version'
+            }
+        }
         stage('Build Backend Image') {
             steps {
                 echo 'Building Backend Docker Image...'
