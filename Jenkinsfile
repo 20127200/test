@@ -2,50 +2,68 @@ pipeline {
     agent any
 
     environment {
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub') // Tên ID credentials của bạn trong Jenkins
+        BACKEND_IMAGE = '20127200/backend-image:latest'
+        FRONTEND_IMAGE = '20127200/frontend-image:latest'
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Đã cấu hình trước trong Jenkins
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Clone Code') {
             steps {
-                git 'https://github.com/NamKhagg/test.git'  // URL repo của bạn
+                echo 'Cloning code from GitHub...'
+                git 'https://github.com/NamKhagg/test.git'
             }
         }
 
         stage('Build Backend Image') {
             steps {
                 echo 'Building Backend Docker Image...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh label: 'Building Backend Image', script: 'docker build -t 20127200/backend-image:latest "./Back end"'  // Build image cho Backend
-                }
+                sh 'docker build -t ${BACKEND_IMAGE} "./Back end"'
             }
         }
 
         stage('Build Frontend Image') {
             steps {
                 echo 'Building Frontend Docker Image...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh label: 'Building Frontend Image', script: 'docker build -t 20127200/frontend-image:latest "./Front end"'  // Build image cho Frontend
+                sh 'docker build -t ${FRONTEND_IMAGE} "./Front end"'
+            }
+        }
+
+        stage('Push Images to Docker Hub') {
+            steps {
+                script {
+                    echo 'Logging into Docker Hub...'
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
+                        echo 'Pushing Backend Image...'
+                        sh 'docker push ${BACKEND_IMAGE}'
+
+                        echo 'Pushing Frontend Image...'
+                        sh 'docker push ${FRONTEND_IMAGE}'
+                    }
                 }
             }
         }
 
-        stage('Push Backend Image') {
+        stage('Deploy Backend Container') {
             steps {
-                echo 'Pushing Backend Docker Image to DockerHub...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh label: 'Pushing Backend Image', script: 'docker push 20127200/backend-image:latest'  // Push Backend image lên DockerHub
-                }
+                echo 'Deploying Backend Container...'
+                sh 'docker run -d -p 3000:3000 --name backend-container ${BACKEND_IMAGE}'
             }
         }
 
-        stage('Push Frontend Image') {
+        stage('Deploy Frontend Container') {
             steps {
-                echo 'Pushing Frontend Docker Image to DockerHub...'
-                withDockerRegistry(credentialsId: 'dockerhub', url: 'https://index.docker.io/v1/') {
-                    sh label: 'Pushing Frontend Image', script: 'docker push 20127200/frontend-image:latest'  // Push Frontend image lên DockerHub
-                }
+                echo 'Deploying Frontend Container...'
+                sh 'docker run -d -p 3001:3001 --name frontend-container ${FRONTEND_IMAGE}'
             }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline completed. Cleaning up old containers...'
+            sh 'docker rm -f backend-container || true'
+            sh 'docker rm -f frontend-container || true'
         }
     }
 }
