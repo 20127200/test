@@ -4,7 +4,7 @@ pipeline {
         stage('Pull Code') {
             steps {
                 echo "Pulling code from GitHub..."
-                git branch: 'main', url: 'https://github.com/username/bakery.git'
+                git branch: 'main', url: 'https://github.com/NamKhagg/test.git'
                 echo "Code pulled successfully!"
             }
         }
