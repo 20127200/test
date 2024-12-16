@@ -4,7 +4,7 @@ pipeline {
     environment {
         BACKEND_IMAGE = '20127200/backend-image:latest'
         FRONTEND_IMAGE = '20127200/frontend-image:latest'
-        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Đã cấu hình trước trong Jenkins
+        DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Đã  hình trước trong Jenkins
     }
 
     stages {
