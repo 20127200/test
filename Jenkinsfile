@@ -18,7 +18,7 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 echo 'Building Backend Docker Image...'
-                bat 'docker build -t ${BACKEND_IMAGE} "./Back end"'
+                sh 'docker build -t ${BACKEND_IMAGE} "./Back end"'
             }
         }
 
