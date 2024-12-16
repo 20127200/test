@@ -1,53 +1,40 @@
 pipeline {
     agent any
+
     environment {
-        DOCKER_CREDENTIALS = 'dockerhub-credentials' // Jenkins credentials ID
-        BACKEND_IMAGE = '20127200/backend-image'     // Backend image name
-        FRONTEND_IMAGE = '20127200/frontend-image'   // Frontend image name
+        DOCKER_CREDENTIALS = 'dockerhub-credentials' // Jenkins credentials ID cho DockerHub
+        BACKEND_IMAGE = '20127200/backend-image'
+        FRONTEND_IMAGE = '20127200/frontend-image'
     }
 
     stages {
-        stage('Clone Code') {
+        stage('Pull Code') {
             steps {
-                echo "Cloning code from GitHub..."
-                git branch: 'master', url: 'https://github.com/NamKhagg/test.git'
+                echo 'Pulling source code from GitHub...'
+                git 'https://github.com/NamKhagg/test.git'
             }
         }
 
-        stage('Build Backend Image') {
+        stage('Build and Push Backend Image') {
             steps {
-                echo "Building Backend Docker image..."
-                sh """
-                cd 'Back end'
-                docker build -t ${BACKEND_IMAGE} .
-                """
-            }
-        }
-
-        stage('Push Backend Image') {
-            steps {
-                echo "Pushing Backend image to Docker Hub..."
-                docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                    sh "docker push ${BACKEND_IMAGE}"
+                script {
+                    echo 'Building and pushing Backend Docker image...'
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
+                        def backendImage = docker.build("${BACKEND_IMAGE}", "./Back end")
+                        backendImage.push('latest')
+                    }
                 }
             }
         }
 
-        stage('Build Frontend Image') {
+        stage('Build and Push Frontend Image') {
             steps {
-                echo "Building Frontend Docker image..."
-                sh """
-                cd 'Front end'
-                docker build -t ${FRONTEND_IMAGE} .
-                """
-            }
-        }
-
-        stage('Push Frontend Image') {
-            steps {
-                echo "Pushing Frontend image to Docker Hub..."
-                docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
-                    sh "docker push ${FRONTEND_IMAGE}"
+                script {
+                    echo 'Building and pushing Frontend Docker image...'
+                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_CREDENTIALS) {
+                        def frontendImage = docker.build("${FRONTEND_IMAGE}", "./Front end")
+                        frontendImage.push('latest')
+                    }
                 }
             }
         }
