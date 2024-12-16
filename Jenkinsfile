@@ -18,8 +18,10 @@ pipeline {
         stage('Build Backend Image') {
             steps {
                 echo 'Building Backend Docker Image...'
-                sh 'docker build -t ${BACKEND_IMAGE} "./Back end"'
-            }
+                    dir('./Back end') {
+                        sh 'docker build -t ${BACKEND_IMAGE} .'
+                    }
+                }
         }
 
         stage('Build Frontend Image') {
