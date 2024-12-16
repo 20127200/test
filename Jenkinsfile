@@ -5,6 +5,7 @@ pipeline {
         BACKEND_IMAGE = '20127200/backend-image:latest'
         FRONTEND_IMAGE = '20127200/frontend-image:latest'
         DOCKERHUB_CREDENTIALS = credentials('dockerhub-credentials') // Đã cấu hìnggh trước trong Jenkins
+        DOCKER_HOST = "unix:///var/run/docker.sock"
     }
 
     stages {
