@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_CREDENTIALS = 'dockerhub-credentials' // Jenkins credentials ID cho DockerHub
-        BACKEND_IMAGE = '20127200/backend-image'
-        FRONTEND_IMAGE = '20127200/frontend-image'
+        DOCKER_CREDENTIALS = 'dockerhub-credentials'  // Jenkins DockerHub credentials ID
+        BACKEND_IMAGE = '20127200/backend-image'      // Tên Backend Docker image
+        FRONTEND_IMAGE = '20127200/frontend-image'    // Tên Frontend Docker image
     }
 
     stages {
-        stage('Pull Code') {
+        stage('Clone Code') {
             steps {
-                echo 'Pulling source code from GitHub...'
-                git 'https://github.com/NamKhagg/test.git'
+                echo 'Cloning source code from GitHub...'
+                git branch: 'master', url: 'https://github.com/NamKhagg/test.git'
             }
         }
 
