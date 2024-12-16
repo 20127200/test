@@ -6,4 +6,3 @@ gdagagag
 update nè ku
 fasfdasfas
 
-lalalalalalalalal3333333333333333333333
