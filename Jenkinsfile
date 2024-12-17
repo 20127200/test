@@ -40,10 +40,10 @@ pipeline {
                     echo 'Logging into Docker Hub...'
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub-credentials') {
                         echo 'Pushing Backend Image...'
-                        bat 'docker push ${BACKEND_IMAGE}'
+                        bat 'docker push 20127200/backend-image:latest'
 
                         echo 'Pushing Frontend Image...'
-                        bat 'docker push ${FRONTEND_IMAGE}'
+                        bat 'docker push 20127200/frontend-image:latest'
                     }
                 }
             }
@@ -52,14 +52,14 @@ pipeline {
         stage('Deploy Backend Container') {
             steps {
                 echo 'Deploying Backend Container...'
-                bat 'docker run -d -p 3000:3000 --name backend-container ${BACKEND_IMAGE}'
+                bat 'docker run -d -p 3000:3000 --name backend-container 20127200/backend-image:latest'
             }
         }
 
         stage('Deploy Frontend Container') {
             steps {
                 echo 'Deploying Frontend Container...'
-                bat 'docker run -d -p 3001:3001 --name frontend-container ${FRONTEND_IMAGE}'
+                bat 'docker run -d -p 3001:3001 --name frontend-container 20127200/frontend-image:latest'
             }
         }
     }
